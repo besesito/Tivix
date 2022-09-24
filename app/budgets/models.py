@@ -13,11 +13,22 @@ class BudgetListManager(models.Manager):
 
 class BudgetList(CommonInfo):
     name = models.CharField(max_length=255)
-    objects = BudgetListManager()
     shared_users = models.ManyToManyField(User, related_name="shared_lists", blank=True)
+
+    objects = BudgetListManager()
 
     def __str__(self):
         return self.name
+
+    @property
+    def total_amount(self):
+        amount = 0
+        for budget in self.budgets.all():
+            if budget.kind == "in":
+                amount += budget.amount
+            else:
+                amount -= budget.amount
+        return amount
 
 
 class BudgetManager(models.Manager):

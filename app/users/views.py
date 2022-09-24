@@ -7,7 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 class LoginClassView(SuccessMessageMixin, LoginView):
-    template_name = "partials/form.html"
+    template_name = "login.html"
 
     def get_success_message(self, cleaned_data):
         return f"Hello {self.request.user}"
@@ -27,7 +27,7 @@ class LoginClassView(SuccessMessageMixin, LoginView):
 class RegisterClassView(SuccessMessageMixin, generic.CreateView):
     model = User
     form_class = UserCreationForm
-    template_name = "partials/form.html"
+    template_name = "login.html"
     success_message = "Your profile was created successfully - you can log in"
 
     def get_context_data(self, **kwargs):

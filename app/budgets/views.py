@@ -18,6 +18,8 @@ class BudgetListCreateView(generic.CreateView):
             method="post",
             value_button="Create",
             title="Create budget list",
+            url=reverse_lazy("budgets:create_list"),
+            modal=True,
         )
         return context
 
