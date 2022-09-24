@@ -1,0 +1,9 @@
+{% load crispy_forms_tags %}
+<div class="text-center">
+  <h5>{{ title }}</h5>
+  <form class="m-auto {{ classes }}" hx-{{ method }}="{{ url }}" hx-target="#content">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input class="btn btn-primary mt-2" type="submit" value="{{ value_button }}" {% if modal %}data-bs-toggle="modal" data-bs-target="#exampleModal"{% endif %}>
+  </form>
+</div>

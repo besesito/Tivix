@@ -1,71 +1,101 @@
+{% include "partials/messages.html" %}
 <!-- Button trigger modal -->
-<button hx-get="{% url 'budgets:create_list' %}" hx-target="#modal-content" type="submit" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+<button hx-get="{% url 'budgets:create_list' %}" hx-target="#modal-content" type="submit" class="btn btn-primary mt-2"
+        data-bs-toggle="modal" data-bs-target="#exampleModal">
   Add new budget list
 </button>
 <div class="row mt-3">
   <div class="col-sm-6 mb-2">
     <h3 class="text-center">My budget lists</h3>
     {% for list in my_lists %}
-    <h5 class="text-center">{{ list }}</h5>
-    {% if list.shared_users.all %}
-    <b>This list is shared with:
-      {% for user in list.shared_users.all %}
-      {{ user }}
-      {% endfor %}
-    </b>
-    {% endif %}
-    <table class="table table-primary">
-      <tr>
-        <td class="table-primary">Name</td>
-        <td class="table-primary">Income/Expense</td>
-        <td class="table-primary">Amount</td>
-      </tr>
-      {% for budget in list.budgets.all %}
-      <tr class="table-{% if budget.kind == 'in' %}success{% else %}danger{% endif %}">
-        <td>{{ budget.name }}</td>
-        <td>{{ budget.kind.value }}</td>
-        <td>{{ budget.amount }}</td>
-      </tr>
-      {% endfor %}
-      <tr class="table-primary">
-        <td>TOTAL</td>
-        <td></td>
-        <td>{{ list.total_amount }}</td>
-      </tr>
-    </table>
+    <div class="bg-light border p-2 rounded mb-2">
+      <h5 class="text-center">{{ list }}</h5>
+      <button hx-get="{% url 'budgets:update_list' list.pk %}" hx-target="#modal-content" type="submit"
+              class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Update
+      </button>
+      <button hx-get="{% url 'budgets:delete_list' list.pk %}" hx-target="#modal-content" type="submit"
+              class="btn btn-danger my-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Delete
+      </button>
+      {% if list.shared_users.all %}
+      <p class="fw-bold">This list is shared with:
+        {% for user in list.shared_users.all %}
+        {{ user }}
+        {% endfor %}
+      </p>
+      {% endif %}
+      <table class="table table-primary">
+        <tr>
+          <td class="table-primary">Name</td>
+          <td class="table-primary">Income/Expense</td>
+          <td class="table-primary">Amount</td>
+          <td class="table-primary">Actions</td>
+        </tr>
+        {% for budget in list.budgets.all %}
+        <tr class="table-{% if budget.kind == 'in' %}success{% else %}danger{% endif %}">
+          <td>{{ budget.name }}</td>
+          <td>{{ budget.kind }}</td>
+          <td>{{ budget.amount }}</td>
+          <td>
+            <button hx-get="{% url 'budgets:update_budget' budget.pk %}" hx-target="#modal-content" type="submit"
+                    class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              ✏
+            </button>
+            <button hx-get="{% url 'budgets:delete_budget' budget.pk %}" hx-target="#modal-content" type="submit"
+                    class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              🗑️
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+        <tr class="table-primary">
+          <td>TOTAL</td>
+          <td></td>
+          <td>{{ list.total_amount }}</td>
+          <td></td>
+        </tr>
+      </table>
+      <button hx-get="{% url 'budgets:create_budget' list.pk %}" hx-target="#modal-content" type="submit"
+              class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        +
+      </button>
+    </div>
     {% endfor %}
   </div>
   <div class="col-sm-6 mb-2">
-    <h3 class="text-center">My shared with users budget lists</h3>
+    <h3 class="text-center">Lists shared with me</h3>
     {% for list in shared_lists %}
-    <h5 class="text-center">{{ list }}</h5>
-    {% if list.shared_users.all %}
-    <b>Owner: {{ list.author }}</b>
-    <b>This list is shared with:
-      {% for user in list.shared_users.all %}
-      {{ user }}
-      {% endfor %}
-    </b>
-    {% endif %}
-    <table class="table table-primary">
-      <tr>
-        <td class="table-primary">Name</td>
-        <td class="table-primary">Income/Expense</td>
-        <td class="table-primary">Amount</td>
-      </tr>
-      {% for budget in list.budgets.all %}
-      <tr class="table-{% if budget.kind == 'in' %}success{% else %}danger{% endif %}">
-        <td>{{ budget.name }}</td>
-        <td>{{ budget.kind.value }}</td>
-        <td>{{ budget.amount }}</td>
-      </tr>
-      {% endfor %}
-      <tr class="table-primary">
-        <td>TOTAL</td>
-        <td></td>
-        <td>{{ list.total_amount }}</td>
-      </tr>
-    </table>
+    <div class="bg-light border p-2 rounded mb-2">
+      <h5 class="text-center">{{ list }}</h5>
+      <p>Author: {{ list.author }}</p>
+      {% if list.shared_users.all %}
+      <p class="fw-bold">This list is shared with:
+        {% for user in list.shared_users.all %}
+        {{ user }}
+        {% endfor %}
+      </p>
+      {% endif %}
+      <table class="table table-primary">
+        <tr>
+          <td class="table-primary">Name</td>
+          <td class="table-primary">Income/Expense</td>
+          <td class="table-primary">Amount</td>
+        </tr>
+        {% for budget in list.budgets.all %}
+        <tr class="table-{% if budget.kind == 'in' %}success{% else %}danger{% endif %}">
+          <td>{{ budget.name }}</td>
+          <td>{{ budget.kind }}</td>
+          <td>{{ budget.amount }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="table-primary">
+          <td>TOTAL</td>
+          <td></td>
+          <td>{{ list.total_amount }}</td>
+        </tr>
+      </table>
+    </div>
     {% endfor %}
   </div>
 </div>
